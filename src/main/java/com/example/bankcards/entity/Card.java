@@ -29,7 +29,7 @@ public class Card {
     private User user;
 
     @NotBlank(message = "Card number cannot be null")
-    @Size(min = 16,max = 16,message = "Card must be 16 characters")
+    @Size(min = 16,max = 255,message = "Card must be 16 characters")
     @Column(unique = true, nullable = false)
     private String number;
 
@@ -51,9 +51,4 @@ public class Card {
     @Column(precision = 19,scale = 2)
     @Builder.Default
     private BigDecimal balance = BigDecimal.ZERO;
-
-    @AssertTrue(message = "Card status must be EXPIRED")
-    public boolean isValid(){
-        return !date.isBefore(LocalDate.now()) || status == Status.EXPIRED;
-    }
 }
