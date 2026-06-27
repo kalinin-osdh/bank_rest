@@ -1,7 +1,7 @@
-package com.example.bankcards.security;
+package com.example.bankcards.config;
 
-import com.example.bankcards.entity.User;
-import org.hibernate.SessionFactory;
+import com.example.bankcards.security.CustomUserDetailsService;
+import com.example.bankcards.security.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/").permitAll()
+                                .requestMatchers("/api/**").permitAll()
                                 .requestMatchers("/").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                         )
