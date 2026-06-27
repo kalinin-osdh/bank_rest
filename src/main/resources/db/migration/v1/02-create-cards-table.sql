@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS cards
+(
+    id      BIGSERIAL PRIMARY KEY,
+    user_id BIGINT       NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    number  VARCHAR(255) NOT NULL UNIQUE,
+    expiry  DATE         NOT NULL,
+    status  VARCHAR(20)  NOT NULL DEFAULT 'ACTIVE',
+    balance DECIMAL(19, 2)        DEFAULT 0.00
+);
