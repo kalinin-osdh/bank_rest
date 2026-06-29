@@ -15,5 +15,5 @@ public class UserResponse {
     private Long id;
     private String username;
     private String role;
-    private List<Card> cards;
+    private List<CardResponse> cards;
 }

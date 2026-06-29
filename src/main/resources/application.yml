@@ -36,6 +36,8 @@ app:
   jwt:
     secret: ${JWT_SECRET}
     expiration-ms: ${JWT_EXPIRATION_MS}
+  encryption:
+    key: ${ENCRYPTION_KEY}
 
 #Что нужно сделать:
  # - Указать настройки подключения к базе данных.

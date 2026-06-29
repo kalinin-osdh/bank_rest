@@ -33,7 +33,7 @@ public class User {
 
     @NotNull(message = "Role cannot be null")
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 5)
+    @Column(nullable = false)
     @Builder.Default
     private Role role = Role.USER;
 

@@ -1,8 +1,13 @@
 package com.example.bankcards.service;
 
+import com.example.bankcards.dto.mapper.CardMapper;
 import com.example.bankcards.dto.mapper.UserMapper;
+import com.example.bankcards.dto.request.RoleRequest;
 import com.example.bankcards.dto.request.UserRequest;
 import com.example.bankcards.dto.response.AuthResponse;
+import com.example.bankcards.dto.response.CardResponse;
+import com.example.bankcards.dto.response.UserResponse;
+import com.example.bankcards.entity.Card;
 import com.example.bankcards.entity.User;
 import com.example.bankcards.entity.enums.Role;
 import com.example.bankcards.repository.UserRepository;
@@ -16,8 +21,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
-@Slf4j
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
@@ -48,8 +54,6 @@ public class UserService {
         user.setRole(Role.USER);
         User saved = userRepository.save(user);
 
-        log.info("User создан {}", saved.getUsername());
-
         String token = jwtService.generateToken(userMapper.userToUserDetails(user));
 
         return userMapper.toAuthResponse(saved, token);
@@ -64,15 +68,50 @@ public class UserService {
                 )
         );
 
-        User user = getByUsername(request.getUsername());
+        User user = getUserEntity(request.getUsername());
         String token = jwtService.generateToken(userMapper.userToUserDetails(user));
 
         return userMapper.toAuthResponse(user, token);
     }
 
-    public User getByUsername(String username) {
+    @Transactional(readOnly = true)
+    public List<UserResponse> getUsers() {
+        return userMapper.toResponse(userRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponse getUserById(Long id) {
+        return userMapper.toResponse(getUserEntity(id));
+    }
+
+    @Transactional(readOnly = true)
+    public List<CardResponse> getCardsByUser(Long id) {
+        User user = getUserEntity(id);
+        return userMapper.toResponse(user).getCards();
+    }
+
+    public UserResponse updateRole(Long id, RoleRequest request) {
+        User user = getUserEntity(id);
+        user.setRole(request.getRole());
+        return userMapper.toResponse(userRepository.save(user));
+    }
+
+    public void deleteUserById(Long id) {
+        User user = getUserEntity(id);
+        userRepository.delete(user);
+    }
+
+    @Transactional(readOnly = true)
+    public User getUserEntity(String username) {
         return userRepository.findByUsername(username).orElseThrow(
-                () -> new EntityNotFoundException("User not found: " + username)
+                () -> new EntityNotFoundException("User entity not found: " + username)
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public User getUserEntity(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("User entity not found: " + id)
         );
     }
 }

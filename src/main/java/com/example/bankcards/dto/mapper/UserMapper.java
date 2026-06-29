@@ -4,6 +4,7 @@ import com.example.bankcards.dto.request.UserRequest;
 import com.example.bankcards.dto.response.AuthResponse;
 import com.example.bankcards.dto.response.UserResponse;
 import com.example.bankcards.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,12 @@ import java.util.stream.Collectors;
 
 @Component
 public class UserMapper {
+    private final CardMapper cardMapper;
+
+    @Autowired
+    public UserMapper(CardMapper cardMapper) {
+        this.cardMapper = cardMapper;
+    }
 
     public UserResponse toResponse(User user){
         if(user==null) return null;
@@ -21,7 +28,7 @@ public class UserMapper {
                 .id(user.getId())
                 .username(user.getUsername())
                 .role(user.getRole().toString())
-                .cards(user.getCards())
+                .cards(cardMapper.toResponse(user.getCards()))
                 .build();
     }
 
@@ -45,7 +52,6 @@ public class UserMapper {
     }
 
     public List<UserResponse> toResponse(List<User> users){
-        if (users.isEmpty()) return null;
         return users.stream().map(this::toResponse).collect(Collectors.toList());
     }
 

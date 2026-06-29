@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class PasswordGeneratorTest {
 
     @Test
-    public void generate(){
+    public void generatePassword(){
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         String password = "admin";
         String crypt = encoder.encode(password);
